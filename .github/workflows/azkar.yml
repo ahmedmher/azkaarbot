@@ -10,9 +10,8 @@ on:
   workflow_dispatch:
     inputs:
       category:
-        description: "اختر الذكر"
-        type: choice
-        options: [morning, evening, sleep, wakeup, after_prayer]
+        description: "مفتاح القسم (morning / evening / sleep / wakeup / after_prayer أو c1, c2 للأقسام المضافة) - يُرسل لكل المستخدمين"
+        type: string
         default: morning
 
 concurrency: azkar
@@ -38,4 +37,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python bot.py send "${{ steps.pick.outputs.cat }}"
+        run: |
+          ARGS=""
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then ARGS="--all"; fi
+          python bot.py send "${{ steps.pick.outputs.cat }}" $ARGS

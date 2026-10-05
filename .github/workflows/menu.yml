@@ -1,19 +1,30 @@
-name: Menu
+name: Bot
 
-# يفحص كل 5 دقائق رسائل /start و /menu ويرد بقائمة الأذكار.
-# (GitHub Actions لا يدعم تشغيلاً دائماً، فالرد قد يتأخر حتى ~5 دقائق.)
+# يعمل كل 5 دقائق ويبقى يستقبل رسائل تليجرام (long polling) لحوالي 5 دقائق،
+# فيرد البوت على المستخدمين والأدمن فوراً تقريباً. الحالة تُحفظ في data/state.json.
 on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
-concurrency: menu
+concurrency:
+  group: bot-menu
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   menu:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+      - name: Git identity
+        run: |
+          git config user.name "azkar-bot"
+          git config user.email "azkar-bot@users.noreply.github.com"
       - run: python bot.py menu
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          LOOP_SECONDS: "285"
