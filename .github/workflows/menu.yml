@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   menu:
@@ -24,6 +25,12 @@ jobs:
         run: |
           git config user.name "azkar-bot"
           git config user.email "azkar-bot@users.noreply.github.com"
+      # يطلب تشغيلة تالية فوراً: تنتظر في الطابور حتى تنتهي هذه، فلا تحصل فجوات
+      # (جدولة cron في GitHub متأخرة وتشتغل كل ~20 دقيقة بدل 5، فهي مجرد شبكة أمان).
+      - name: Chain next run
+        run: gh workflow run menu.yml --ref "${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - run: python bot.py menu
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
