@@ -264,9 +264,9 @@
   },
   "8627169909": {
    "prefs": [
-    "morning",
     "evening",
-    "sleep"
+    "sleep",
+    "morning"
    ],
    "active": true
   }
