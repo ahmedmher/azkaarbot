@@ -718,9 +718,8 @@
   },
   "897481422": {
    "prefs": [
-    "morning",
-    "evening",
-    "sleep"
+    "sleep",
+    "evening"
    ],
    "active": true
   }
